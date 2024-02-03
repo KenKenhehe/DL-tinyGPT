@@ -32,7 +32,7 @@ if visualize:
     plt.axis("off")
     plt.show()
 
-#Generate data with bigram
+#Generate name with bigram
 generator = torch.Generator()
 prob_matrix = char_count_matrix.float()
 prob_matrix = prob_matrix / prob_matrix.sum(1, keepdim=True)
