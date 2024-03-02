@@ -6,7 +6,7 @@ import json
 import tqdm
 
 block_size = 3
-embedding_space_dimention = 14
+embedding_space_dimention = 2
 
 def preprocess_dataset():
     words = open("dataset/names.txt", "r").read().splitlines()
@@ -80,6 +80,9 @@ if __name__ == "__main__":
         logits = h1_output @ W2 + b2
         counts = logits.exp()
         prob = counts / counts.sum(1, keepdims=True)
+
+        print(f"output: {logits[0]}")
+        print(f"labels: {y_train[mini_batch_idx]}")
         loss = F.cross_entropy(logits, y_train[mini_batch_idx]) # equvalent to -prob[torch.arange(X.shape[0]), Y].log().mean()
         #Backword pass
         for p in parameters:
@@ -109,6 +112,7 @@ if __name__ == "__main__":
     embedding = lookup_table[x_dev]
     h1_output = torch.tanh(embedding.view(-1, block_size * embedding_space_dimention) @ W1 + b1)
     logits = h1_output @ W2 + b2
+    
     loss = F.cross_entropy(logits, y_dev)
 
     loss_data = loss.item()

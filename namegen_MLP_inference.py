@@ -2,7 +2,7 @@ import torch
 import torch.nn.functional as F
 from namegen_MLP_model import block_size
 
-chk_data = torch.load("MLP.pt")
+chk_data = torch.load("MLP_handgun.pt")
 
 itos = chk_data["itos"]
 lookup_table = chk_data["lookup_table"]
@@ -27,6 +27,6 @@ def sample(num: int):
             out.append(index)
             if index == 0:
                 break
-        print("".join(itos[i] for i in out))
+        print("".join(itos[i] for i in out)[:-1])
 if __name__ == "__main__":
-    sample(15)
+    sample(30)
