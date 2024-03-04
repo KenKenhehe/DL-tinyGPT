@@ -4,8 +4,9 @@ import matplotlib.pyplot as plt
 import torch.nn as nn
 import random
 
-block_size = 3
+block_size = 8
 batch_size = 64
+embedding_space_dimension = 3
 class MLP(nn.Module):
     def __init__(self, block_size, embedding_dimension, layer_size, output_size):
         super().__init__()
@@ -56,14 +57,13 @@ if __name__ == "__main__":
     x_test, y_test = build_dataset(words[n2:])
 
     vocab_size = len(itos)
-    embedding_space_dimension = 2
 
     lookup_table = torch.randn((vocab_size, embedding_space_dimension))
 
     model = MLP(block_size=block_size, embedding_dimension=embedding_space_dimension, 
-                layer_size=100, output_size=vocab_size)
-    optimizer = torch.optim.SGD(model.parameters(), lr=0.1, momentum=0.9)
-    epoch = 110000
+                layer_size=150, output_size=vocab_size)
+    optimizer = torch.optim.SGD(model.parameters(), lr=0.1)
+    epoch = 200000
 
     current_best_loss = float("inf")
     for i in range(epoch):
@@ -86,7 +86,7 @@ if __name__ == "__main__":
         #update weights
         optimizer.step()
 
-        if i > 50000:
+        if i > 100000:
             for g in optimizer.param_groups:
                 g['lr'] = 0.01
 
@@ -104,5 +104,20 @@ if __name__ == "__main__":
 
         if(val_loss.item() < current_best_loss):
             current_best_loss = val_loss
-            print(f"new best current loss:{val_loss}, update model...")
-            torch.save(model.state_dict(), "MLP.pt")
+            print(f"new best current loss:{val_loss}, update saved model...")
+            torch.save(model, "MLP.pt")
+    
+    lookup_table_to_save = {
+        "lookup_table":lookup_table,
+        "itos": itos
+    }
+    
+    torch.save(lookup_table_to_save, "table.pt")
+
+    #Evaluate test loss
+    model = torch.load("MLP.pt")
+    model.eval()
+    embedding = lookup_table[x_test]
+    output = model(embedding.view(-1, block_size * embedding_space_dimension))
+    test_loss = F.cross_entropy(output, y_test)
+    print(f"Final test loss: {test_loss.item()}")
