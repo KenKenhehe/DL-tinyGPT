@@ -1,7 +1,7 @@
 import torch
 import matplotlib.pyplot as plt
 
-words = open("dataset/names.txt", "r").read().splitlines()
+words = open("../dataset/names.txt", "r").read().splitlines()
 
 char_count_matrix = torch.zeros((27, 27), dtype=torch.int32)
 

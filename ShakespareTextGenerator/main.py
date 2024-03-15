@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 from torch.nn import functional as F
+from tqdm import tqdm
 
 #hyperparameters
 
@@ -10,7 +11,7 @@ learning_rate = 1e-3
 max_train_iteration = 20000
 #------
 
-with open('input.txt', 'r', encoding='utf-8') as f:
+with open('../dataset/input.txt', 'r', encoding='utf-8') as f:
     text = f.read()
 
 chars = sorted(list(set(text)))
@@ -82,9 +83,9 @@ print("Before any training: ")
 generated_text = model.generate(idx=torch.zeros((1, 1), dtype=torch.long), max_new_tokens=500)[0]
 print(decode(generated_text.tolist()))
 
+print("Now training")
 optimizer = torch.optim.AdamW(model.parameters(), lr = learning_rate)
-
-for step in range(max_train_iteration):
+for step in tqdm(range(max_train_iteration)):
     #get training data in batch
     xb, yb = get_batch("train")
 

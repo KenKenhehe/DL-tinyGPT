@@ -14,23 +14,22 @@ itos = table_data["itos"]
 # b2 = chk_data["b2"]
 
 def sample(num: int):
-    g = torch.Generator()
     model.eval()
     for _ in range(num):
         out = []
         context = [0] * block_size
         while True:
             #torch inference
-            embedding = lookup_table[torch.tensor([context])]
-            output = model(embedding.view(-1, block_size * embedding_space_dimension))
-            probs = F.softmax(output, dim=1)
+            embedding = lookup_table[torch.tensor([context]).to("cuda")].to("cuda")
+            output = model(embedding.view(-1, block_size * embedding_space_dimension)).to("cuda")
+            probs = F.softmax(output, dim=1).to("cuda")
             #--------
             # embedding = lookup_table[torch.tensor([context])]
             # h1_output = torch.tanh(embedding.view(1, -1) @ W1 + b1)
             # logits = h1_output @ W2 + b2
             # probs = F.softmax(logits, dim=1)
             #sample from distribution
-            index = torch.multinomial(probs, num_samples=1, generator=g).item()
+            index = torch.multinomial(probs, num_samples=1).item()
             context = context[1:] + [index]
             out.append(index)
             if index == 0:

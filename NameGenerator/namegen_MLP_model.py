@@ -9,7 +9,7 @@ block_size = 3
 embedding_space_dimention = 2
 
 def preprocess_dataset():
-    words = open("dataset/names.txt", "r").read().splitlines()
+    words = open("../dataset/names.txt", "r").read().splitlines()
 
     # create character to integer mapping
     chars = sorted(list(set("".join(words))))
