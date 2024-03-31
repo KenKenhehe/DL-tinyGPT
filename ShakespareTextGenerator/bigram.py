@@ -9,6 +9,8 @@ block_size = 8
 batch_size = 32
 learning_rate = 1e-3
 max_train_iteration = 20000
+device = "cuda" if torch.cuda.is_available() else "cpu"
+
 #------
 
 with open('../dataset/input.txt', 'r', encoding='utf-8') as f:
@@ -41,6 +43,7 @@ def get_batch(data_type):
     ix = torch.randint(len(data) - block_size, (batch_size, ))
     x = torch.stack([data[i:i+block_size] for i in ix])
     y = torch.stack([data[i + 1:i+block_size + 1] for i in ix])
+    x, y = x.to(device), y.to(device)
     return x, y
 
 xb, yb = get_batch("train")
@@ -78,9 +81,11 @@ class BigramLanguageModel(nn.Module):
         return idx
     
 model = BigramLanguageModel(vocab_size=vocab_size)
+model = model.to(device)
+
 logits, loss = model(xb, yb)
 print("Before any training: ")
-generated_text = model.generate(idx=torch.zeros((1, 1), dtype=torch.long), max_new_tokens=500)[0]
+generated_text = model.generate(idx=torch.zeros((1, 1), dtype=torch.long, device=device), max_new_tokens=500)[0]
 print(decode(generated_text.tolist()))
 
 print("Now training")
@@ -97,5 +102,5 @@ for step in tqdm(range(max_train_iteration)):
 
 print("After some training: ")
 print(loss.item())
-generated_text = model.generate(idx=torch.zeros((1, 1), dtype=torch.long), max_new_tokens=500)[0]
+generated_text = model.generate(idx=torch.zeros((1, 1), dtype=torch.long, device=device), max_new_tokens=500)[0]
 print(decode(generated_text.tolist()))
