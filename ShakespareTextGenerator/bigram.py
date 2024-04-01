@@ -90,15 +90,29 @@ print(decode(generated_text.tolist()))
 
 print("Now training")
 optimizer = torch.optim.AdamW(model.parameters(), lr = learning_rate)
-for step in tqdm(range(max_train_iteration)):
-    #get training data in batch
+current_best_loss = float("inf")
+for step in range(max_train_iteration):
+    #Calculate train loss
+    model.train()
     xb, yb = get_batch("train")
-
-    #evaluate loss
     logits, loss = model(xb, yb)
+
+    #optimize model
     optimizer.zero_grad(set_to_none=True)
     loss.backward()
     optimizer.step()
+
+    #Calculate validation loss
+    model.eval()
+    xb, yb = get_batch("val")
+    logits, val_loss = model(xb, yb)
+    
+    if(step % 500 == 0):
+        print(f"step {step}   train loss: {loss}, val loss: {val_loss}")
+    if(val_loss.item() < current_best_loss):
+        current_best_loss = val_loss
+        print(f"new best current loss:{val_loss}, update saved model...")
+        torch.save(model, "transformer_singlehead.pt")
 
 print("After some training: ")
 print(loss.item())
