@@ -1,0 +1,143 @@
+---------------------------------------------------------------------------
+Result for training training using a simple Bigram model (20000 epoch):
+step 0   train loss: 4.596603870391846, val loss: 4.74109411239624
+step 500   train loss: 4.158691883087158, val loss: 4.064849376678467
+step 1000   train loss: 3.6593880653381348, val loss: 3.7954812049865723
+step 1500   train loss: 3.363168716430664, val loss: 3.410508632659912
+step 2000   train loss: 3.2060155868530273, val loss: 3.0383663177490234
+step 2500   train loss: 2.9914631843566895, val loss: 2.8972597122192383
+step 3000   train loss: 2.9139394760131836, val loss: 2.8663980960845947
+step 3500   train loss: 2.7430593967437744, val loss: 2.7342262268066406
+step 4000   train loss: 2.7968027591705322, val loss: 2.6118953227996826
+step 4500   train loss: 2.619060516357422, val loss: 2.5704078674316406
+step 5000   train loss: 2.5389835834503174, val loss: 2.5405807495117188
+step 5500   train loss: 2.5596861839294434, val loss: 2.451772689819336
+step 6000   train loss: 2.5773558616638184, val loss: 2.561373233795166
+step 6500   train loss: 2.5181360244750977, val loss: 2.4932706356048584
+step 7000   train loss: 2.4117281436920166, val loss: 2.571091890335083
+step 7500   train loss: 2.435774564743042, val loss: 2.4533495903015137
+step 8000   train loss: 2.560063600540161, val loss: 2.53842830657959
+step 8500   train loss: 2.5471293926239014, val loss: 2.428938865661621
+step 9000   train loss: 2.5076847076416016, val loss: 2.4160709381103516
+step 9500   train loss: 2.377575159072876, val loss: 2.441188097000122
+step 10000   train loss: 2.472573757171631, val loss: 2.42413592338562
+step 10500   train loss: 2.2656006813049316, val loss: 2.362510919570923
+step 11000   train loss: 2.640528678894043, val loss: 2.447530746459961
+step 11500   train loss: 2.4363412857055664, val loss: 2.4405641555786133
+step 12000   train loss: 2.4813413619995117, val loss: 2.429499626159668
+step 12500   train loss: 2.3907172679901123, val loss: 2.6947691440582275
+step 13000   train loss: 2.4113457202911377, val loss: 2.694129228591919
+step 13500   train loss: 2.5402419567108154, val loss: 2.496077299118042
+step 14000   train loss: 2.476949453353882, val loss: 2.4563329219818115
+step 14500   train loss: 2.5236618518829346, val loss: 2.461345672607422
+step 15000   train loss: 2.4110748767852783, val loss: 2.403674840927124
+step 15500   train loss: 2.410588264465332, val loss: 2.4406771659851074
+step 16000   train loss: 2.4095592498779297, val loss: 2.5574593544006348
+step 16500   train loss: 2.3709614276885986, val loss: 2.6353819370269775
+step 17000   train loss: 2.49100661277771, val loss: 2.486933708190918
+step 17500   train loss: 2.5922226905822754, val loss: 2.549081325531006
+step 18000   train loss: 2.4667680263519287, val loss: 2.505741834640503
+step 18500   train loss: 2.4965946674346924, val loss: 2.466623067855835
+step 19000   train loss: 2.449780225753784, val loss: 2.5673558712005615
+step 19500   train loss: 2.4317245483398438, val loss: 2.4541900157928467
+
+Best loss: 2.4541900157928467
+
+sample generated text: 
+
+Hast R:
+IO: s. e.
+Theasothar'The LADu arry bupego hy g t MENGOMI. h t wad y s overswimeroked galdianease ise s sheithes pe rsane'd, fouree,
+TIUStowigre MENCORApllle d f s fee Whals
+Be pr INCHAngr:
+Torirve.
+
+
+'lanind adibure ds w nams,
+I XF f sent mak llk Getus.
+RI:
+Cl ara IORBan the wang seemot; inchth buc rethathakilee eckeder otrk a palea anck t! an D pan tlatrg e arese ns t fowim lliof sa s
+
+Byon feme kin w is gll, tiowindsd
+Be,
+fok be n, d lain measie weruesuiparist ts Hem.
+TH:
+ARYounere t D
+
+----------------------------------------------------------------------------------
+
+Result for training training using a Transformer model (5000 epoch):
+trained model best loss: 1.531021237373352
+
+sample generated text:
+
+The mighta's Ausidio's hearts;
+No, right now inwalt and foer too be a ride.
+The conscient me, wherefore to the sailt is thands?
+Whereou man when he was a form my joy,
+That when all bents my kingdness. I'll two my blood
+In the father, exher were my Lord, ben my the
+earther-deposition, met me unto the sue
+In the oper any up inpencle.
+And, thou art bettter hath with shine much ill draw;
+And than dintal so to save thy brothers.
+
+KING HENRY VI:
+Would by do sworn. Come since and do from that I
+hath breath the wooe.
+
+MENENIUS:
+Of thou wrant-ears, as ever cry at to men.
+
+DUKE VINCENTIO:
+Not living is capies; and if your and in you but
+Come for Edward's gentleman im'd us a a harpise.
+
+QUEEN ELIZABETH:
+Stands he womunded that against them, but I think
+grieved of at sake from the in the grat ommatting him
+a lost the foes that percy to him.
+
+NORTHUMBERLAND:
+Go my lord, but seen'ther proke, counh hands,
+In leave you do thy know.
+So how? We it do forth Catizen: he's and heart,
+We have it of these world to By or life,
+With a courtent infends of them.
+
+Citizen:
+And it be rage?
+
+BENVOLIO:
+I,' sir, only time.
+
+BRUTUS:
+Come, infiend most baltle spoket; I disglo;
+The never from yon humounds your with a arperital:
+Such counsel with their remainst and remembut your
+Doth the seal
+A mine of this blooding find becomes, the would contenty.
+
+Third Citizen:
+I warrds, and dosen recouration, and friends
+Which thou slow melive you, I still you have noble
+me to great'd you alren at as yong:
+Well it in you aughter; if therefore and Manry!
+
+DUCHESS OF YORK:
+How come your condemion, confim to make?
+
+LEONTES:
+May good chastle? where the plot, yet them holy foet.
+
+ROMEO:
+What thou do yu great too heart with such of mine;
+And you shill be the gold of reaceson yer
+What new wiver to me pies fear where is my will,
+But to bear himself noisher clucks, resported not
+I chat from our self he growls scorge: I have are it;
+And I cannot youble you hard'd men a pound
+Time down in discor of lawll way. You thusband,
+
+
+

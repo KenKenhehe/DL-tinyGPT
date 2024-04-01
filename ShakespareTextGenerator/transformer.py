@@ -5,15 +5,18 @@ from tqdm import tqdm
 
 #hyperparameters
 
-block_size = 8
-batch_size = 32
-learning_rate = 1e-3
-max_train_iteration = 5500
+block_size = 256
+batch_size = 64
+learning_rate = 3e-4
+max_train_iteration = 6000
 device = "cuda" if torch.cuda.is_available() else "cpu"
-n_embed = 32
+n_embed = 128
 
 generate_text = True
 
+n_head = 6
+n_layer = 8
+dropout = 0.2
 #------
 
 with open('../dataset/input.txt', 'r', encoding='utf-8') as f:
@@ -66,6 +69,7 @@ class Head(nn.Module):
         self.query = nn.Linear(n_embed, head_size, bias=False)
         self.value = nn.Linear(n_embed, head_size, bias=False)
         self.register_buffer("tril", torch.tril(torch.ones(block_size, block_size)))
+        self.dropout = nn.Dropout(dropout)
 
     def forward(self, x:torch.Tensor):
         B,T,C = x.shape #Batch, Block, Channel
@@ -74,7 +78,7 @@ class Head(nn.Module):
         wei = q @ k.transpose(-2, -1) * C**-0.5
         wei = wei.masked_fill(self.tril[:T, :T] == 0, float("-inf"))
         wei = F.softmax(wei, dim=-1)
-
+        wei = self.dropout(wei)
         v = self.value(x)
         out = wei @ v
         return out
@@ -83,25 +87,58 @@ class MultiHeadAttention(nn.Module):
     def __init__(self, num_head:int, head_size:int):
         super().__init__()
         self.heads = nn.ModuleList([Head(head_size) for _ in range(num_head)])
+        self.proj = nn.Linear(num_head * head_size, n_embed)
+        self.dropout = nn.Dropout(dropout)
+    def forward(self, x):
+        out = torch.cat([h(x) for h in self.heads], dim=-1)
+        out = self.dropout(self.proj(out))
+        return out
+    
+class FeedForward(nn.Module):
+    def __init__(self, n_embed:int):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Linear(n_embed, 4 * n_embed),
+            nn.ReLU(),
+            nn.Linear(4 * n_embed, n_embed),
+            nn.Dropout(dropout)
+        )
+    
+    def forward(self, x):
+        return self.net(x)
+    
+class Block(nn.Module):
+    """Transformer block, communication followed by computation"""
+
+    def __init__(self, n_embed:int, n_head:int):
+        super().__init__()
+        head_size = n_embed // n_head
+        self.sa = MultiHeadAttention(n_head, head_size)
+        self.feed_forward = FeedForward(n_embed)
+        self.ln1 = nn.LayerNorm(n_embed)
+        self.ln2 = nn.LayerNorm(n_embed)
 
     def forward(self, x):
-        return torch.cat([h(x) for h in self.heads], dim=-1)
+        x = x + self.sa(self.ln1(x))
+        x = x + self.feed_forward(self.ln2(x))
+        return x
 
 class Transformer(nn.Module):
     def __init__(self, vocab_size, n_embedding, block_size = 8):
         super().__init__()
         self.token_embedding_table = nn.Embedding(vocab_size, n_embedding)
         self.position_embedding_table = nn.Embedding(block_size, n_embedding)
-        self.sa_head = MultiHeadAttention(4, n_embed//4)
+        self.blocks = nn.Sequential(*[Block(n_embed, n_head=n_head) for _ in range(n_layer)])
+        self.ln_f = nn.LayerNorm(n_embed)
         self.lm_head = nn.Linear(n_embedding, vocab_size)
-
+        
     def forward(self, idx, targets = None):
         B, T = idx.shape #Batch, Block
-        
         token_emb = self.token_embedding_table(idx) #(batch, block, channel(64))
         pos_emb = self.position_embedding_table(torch.arange(T, device=device)) #(Block, Channel)
         x = token_emb + pos_emb
-        x = self.sa_head(x)
+        x = self.blocks(x)
+        x = self.ln_f(x)
         logits = self.lm_head(x)
         if targets == None:
             loss = None
@@ -124,7 +161,7 @@ class Transformer(nn.Module):
 
         return idx
     
-model = Transformer(vocab_size=vocab_size, n_embedding=n_embed)
+model = Transformer(vocab_size=vocab_size, n_embedding=n_embed, block_size=block_size)
 model = model.to(device)
 
 logits, loss = model(xb, yb)
@@ -158,13 +195,13 @@ for step in range(max_train_iteration):
     if(val_loss.item() < current_best_loss):
         current_best_loss = val_loss
         print(f"new best current loss:{val_loss}, update saved model...")
-        torch.save(model, "transformer_singlehead.pt")
+        torch.save(model, "transformer.pt")
 
 if generate_text:
     print(f"trained model best loss: {current_best_loss.item()}")
     print("Generating text from trained model: ")
     
-    model = torch.load("transformer_singlehead.pt")
+    model = torch.load("transformer.pt")
     model.eval()
-    generated_text = model.generate(idx=torch.zeros((1, 1), dtype=torch.long, device=device), max_new_tokens=500)[0]
+    generated_text = model.generate(idx=torch.zeros((1, 1), dtype=torch.long, device=device), max_new_tokens=2000)[0]
     print(decode(generated_text.tolist()))
